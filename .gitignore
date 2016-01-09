@@ -89,10 +89,6 @@ captures/
 ### Android Patch ###
 gen-external-apklibs
 
-
-### Gradle ###
-.gradle
-
 # Ignore Gradle GUI config
 gradle-app.setting
 
