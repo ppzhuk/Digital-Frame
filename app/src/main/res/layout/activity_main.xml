@@ -26,7 +26,9 @@
         android:text="@string/sign_in"
         android:id="@+id/button"
         android:layout_below="@+id/editText2"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp" />
 
     <EditText
         android:layout_width="wrap_content"
