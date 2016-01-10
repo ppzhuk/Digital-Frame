@@ -9,4 +9,5 @@
     <string name="menu_how_to">How to use</string>
     <string name="explorer">Explorer</string>
     <string name="empty_list">This directory is empty.</string>
+    <string name="no_images">There is no images to show.</string>
 </resources>
