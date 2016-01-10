@@ -14,6 +14,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.yandex.disk.client.Credentials;
+import com.yandex.disk.client.TransportClient;
+import com.yandex.disk.client.exceptions.WebdavClientInitException;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +36,7 @@ public class ExplorerActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         Uri url = getIntent().getData();
         if (url != null) {
             String fragment = url.getFragment();
@@ -44,7 +49,6 @@ public class ExplorerActivity extends AppCompatActivity
         }
 
         setContentView(R.layout.activity_explorer);
-
     }
 
     public String getToken() {
