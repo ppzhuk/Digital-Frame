@@ -10,7 +10,10 @@ import android.view.ViewGroup;
 
 
 
-public class SignIn extends Fragment {
+public class SignInFragment extends Fragment {
+
+    public SignInFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -18,6 +21,5 @@ public class SignIn extends Fragment {
 
         return inflater.inflate(R.layout.fragment_sign_in, container, false);
     }
-
 
 }

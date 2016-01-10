@@ -3,12 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ppzh.ru.digitalframe.MainActivity">
+    tools:context="ppzh.ru.digitalframe.ExplorerActivity">
 
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="ppzh.ru.digitalframe.SignInFragment"
-        android:id="@+id/sign_in_fragment"/>
-
+        android:name="ppzh.ru.digitalframe.ExplorerFragment"
+        android:id="@+id/explorer_fragment"/>
 </LinearLayout>

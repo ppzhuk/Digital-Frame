@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -6,7 +7,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
-    tools:context="ppzh.ru.digitalframe.SignIn">
+    tools:context=".SignInFragment">
 
     <TextView
         android:layout_width="fill_parent"
@@ -27,7 +28,8 @@
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
         android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"/>
+        android:layout_marginTop="5dp"
+        android:onClick="signInButtonoPressed"/>
 
     <EditText
         android:layout_width="fill_parent"

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:DigitalFrame="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/login_name_nemu"
+        android:title="USERNAME"
+        DigitalFrame:showAsAction="ifRoom|withText">
+        <menu>
+            <item android:id="@+id/logout_menu"
+                android:title="@string/log_out"
+                DigitalFrame:showAsAction="never">
+            </item>
+        </menu>
+    </item>
+    <item android:id="@+id/menu_settings"
+        android:title="@string/menu_settings"
+        DigitalFrame:showAsAction="never">
+    </item>
+    <item android:id="@+id/menu_how_to"
+        android:title="@string/menu_how_to"
+        DigitalFrame:showAsAction="never">
+    </item>
+</menu>
