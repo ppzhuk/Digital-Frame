@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Digital Frame</string>
     <string name="login">Login</string>
-    <string name="login_message">Enter your Yandex.Disk account info to sign in.</string>
+    <string name="login_message">Sign in into your Yandex.Disk.</string>
     <string name="password">Password</string>
     <string name="sign_in">Sign in</string>
     <string name="log_out">Log out</string>
