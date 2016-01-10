@@ -2,54 +2,33 @@ package ppzh.ru.digitalframe;
 
 import android.app.Activity;
 import android.app.ListFragment;
-import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.ListView;;
 import android.widget.TextView;
 
 import com.yandex.disk.client.Credentials;
 import com.yandex.disk.client.ListItem;
-import com.yandex.disk.client.ListParsingHandler;
 import com.yandex.disk.client.TransportClient;
-import com.yandex.disk.client.exceptions.CancelledPropfindException;
-import com.yandex.disk.client.exceptions.PreconditionFailedException;
-import com.yandex.disk.client.exceptions.ServerWebdavException;
-import com.yandex.disk.client.exceptions.UnknownServerWebdavException;
-import com.yandex.disk.client.exceptions.WebdavClientInitException;
-import com.yandex.disk.client.exceptions.WebdavFileNotFoundException;
-import com.yandex.disk.client.exceptions.WebdavForbiddenException;
-import com.yandex.disk.client.exceptions.WebdavInvalidUserException;
-import com.yandex.disk.client.exceptions.WebdavNotAuthorizedException;
-import com.yandex.disk.client.exceptions.WebdavUserNotInitialized;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ExplorerFragment extends ListFragment {
-
+    ExplorerFragment fragment = this;
     OnFragmentInteractionListener mListener;
     TransportClient client;
     ItemsList list = new ItemsList();
 
     ListView listView;
-    ExplorerAdapter adapter;
+    TextView emptyListTextView;
+    ExplorerAdapter adapter = null;
 
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
+    public static ListItem currentFolderItem = null;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public ExplorerFragment() {
     }
 
@@ -64,7 +43,7 @@ public class ExplorerFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_explorer, container, false);
-        TextView emptyListTextView = (TextView)view.findViewById(android.R.id.empty);
+        emptyListTextView = (TextView)view.findViewById(android.R.id.empty);
         emptyListTextView.setText(R.string.login_message);
 
         if (mListener.getToken() != null) {
@@ -75,39 +54,71 @@ public class ExplorerFragment extends ListFragment {
                                                                       mListener.getToken()));
 
                 listView = (ListView) view.findViewById(android.R.id.list);
-                final ExplorerFragment c = this;
-                new AsyncTask<Void, Void, Void>(){
-                    @Override
-                    protected void onPreExecute() {
-                        listView.setEnabled(false);
-                        listView.setBackgroundColor(getResources().getColor(R.color.colorNotEnabled));
-                    }
+                this.registerForContextMenu(listView);
 
-                    @Override
-                    protected Void doInBackground(Void... params) {
-                        try {
-                            client.getList("/photo_test/", list);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    }
+                ExplorerFragment c = this;
 
-                    @Override
-                    protected void onPostExecute(Void s) {
-                        listView.setEnabled(true);
-                        listView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-                        adapter = new ExplorerAdapter(getActivity(), list);
-                        c.setListAdapter(adapter);
-                    }
+//               TODO change path to root folder
+                openFolder("/");
 
-                }.execute();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
         return view;
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        ListItem item = (ListItem) adapter.getItem(position);
+        if (item.isCollection()) {
+            String path = item.getFullPath();
+            openFolder(path);
+        } else {
+//            TODO: show image preview
+        }
+    }
+
+    public void openFolder(String path) {
+        new AsyncTask<String, Void, Void>(){
+            @Override
+            protected void onPreExecute() {
+                list.clear();
+                listView.setEnabled(false);
+                listView.setBackgroundColor(getResources().getColor(R.color.colorNotEnabled));
+            }
+
+            @Override
+            protected Void doInBackground(String... params) {
+                try {
+                    client.getList(params[0], list);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void s) {
+                listView.setEnabled(true);
+                listView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                currentFolderItem = list.getList().remove(0);
+
+                Log.i("ExplorerFragment", currentFolderItem.getFullPath());
+
+                fragment.getActivity().setTitle(currentFolderItem.getDisplayName());
+                if (adapter == null) {
+                    adapter = new ExplorerAdapter(getActivity(), list);
+                    fragment.setListAdapter(adapter);
+                } else {
+                    emptyListTextView.setText(R.string.empty_list);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+        }.execute(path);
     }
 
     @Override
@@ -129,6 +140,17 @@ public class ExplorerFragment extends ListFragment {
 
     public interface OnFragmentInteractionListener {
         String getToken();
+    }
+
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        return super.onContextItemSelected(item);
     }
 }
 

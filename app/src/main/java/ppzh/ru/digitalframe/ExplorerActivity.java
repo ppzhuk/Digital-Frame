@@ -1,5 +1,7 @@
 package ppzh.ru.digitalframe;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,17 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-
-import com.yandex.disk.client.Credentials;
-import com.yandex.disk.client.TransportClient;
-import com.yandex.disk.client.exceptions.WebdavClientInitException;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class ExplorerActivity extends AppCompatActivity
@@ -31,6 +22,8 @@ public class ExplorerActivity extends AppCompatActivity
 
     private static final String TAG = "ExplorerActivity";
     private static final String DEVICE_ID = "ru.ppzh.digitalfrane.DEVICE_ID";
+
+    ExplorerFragment fragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +42,15 @@ public class ExplorerActivity extends AppCompatActivity
         }
 
         setContentView(R.layout.activity_explorer);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager
+                .beginTransaction();
+
+        fragment = new ExplorerFragment();
+        fragmentTransaction.add(R.id.explorer_fragment_container, fragment);
+        fragmentTransaction.commit();
+
+
     }
 
     public String getToken() {
@@ -74,7 +76,7 @@ public class ExplorerActivity extends AppCompatActivity
             case R.id.menu_login:
                 yandexDiskLogin();
                 return true;
-            // TODO: add menu actions
+            // TODO: add menu actions handling
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -112,5 +114,17 @@ public class ExplorerActivity extends AppCompatActivity
         int start = "access_token=".length();
         int end = fragment.indexOf('&');
         return fragment.substring(start, end);
+    }
+
+    @Override
+    public void onBackPressed() {
+        String currentPath = ExplorerFragment.currentFolderItem.getFullPath();
+
+        if (currentPath.length() == 0) {
+            super.onBackPressed();
+        } else {
+            String previousFolderPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+            fragment.openFolder(previousFolderPath);
+        }
     }
 }

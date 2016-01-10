@@ -5,9 +5,9 @@
     android:layout_height="match_parent"
     tools:context="ppzh.ru.digitalframe.ExplorerActivity">
 
-    <fragment
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="ppzh.ru.digitalframe.ExplorerFragment"
-        android:id="@+id/explorer_fragment"/>
+        android:orientation="vertical"
+        android:id="@+id/explorer_fragment_container"/>
 </LinearLayout>

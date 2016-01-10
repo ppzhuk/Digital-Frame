@@ -14,7 +14,7 @@ import com.yandex.disk.client.ListItem;
 /**
  * Created by Pavel on 10.01.2016.
  */
-// TODO: manage disk content
+
 public class ExplorerAdapter extends BaseAdapter {
     private Context context;
     private ItemsList items;
@@ -55,7 +55,7 @@ public class ExplorerAdapter extends BaseAdapter {
         ImageView icon = (ImageView)view.findViewById(R.id.item_image);
         TextView name = (TextView)view.findViewById(R.id.item_name);
 
-        // TODO: filter only folders and jpegs
+
         if (item.isCollection()) {
             icon.setImageResource(R.drawable.ic_folder_black_24dp);
         } else {
