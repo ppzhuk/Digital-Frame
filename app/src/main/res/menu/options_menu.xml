@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:DigitalFrame="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_settings"
+        android:title="@string/menu_settings"
+        DigitalFrame:showAsAction="never">
+    </item>
+    <item android:id="@+id/menu_how_to"
+        android:title="@string/menu_how_to"
+        DigitalFrame:showAsAction="never">
+    </item>
+</menu>
