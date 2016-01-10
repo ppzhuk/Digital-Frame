@@ -5,6 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.SimpleAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExplorerFragment extends ListFragment {
 
@@ -29,17 +34,21 @@ public class ExplorerFragment extends ListFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_explorer, container, false);
 
-        // TODO: 1. add adapter. 2. Set the adapter
-//        if (view instanceof RecyclerView) {
-//            Context context = view.getContext();
-//            RecyclerView recyclerView = (RecyclerView) view;
-//            if (mColumnCount <= 1) {
-//                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-//            } else {
-//                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-//            }
-//            recyclerView.setAdapter(new ExplorerAdapter(DummyContent.ITEMS, mListener));
-//        }
+//      Mock data
+        List<String> list = new ArrayList<>();
+        list.add("111"); list.add("222"); list.add("333");
+        list.add("111"); list.add("222"); list.add("333");
+        list.add("111"); list.add("222"); list.add("333");
+        list.add("111"); list.add("222"); list.add("333");
+        list.add("111"); list.add("222"); list.add("333");
+        list.add("111"); list.add("222"); list.add("333");
+        list.add("111"); list.add("222"); list.add("333");
+//      ---------------
+
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(this.getActivity(), R.layout.explorer_list_item, R.id.item_name);
+        adapter.addAll(list);
+        this.setListAdapter(adapter);
         return view;
     }
 
