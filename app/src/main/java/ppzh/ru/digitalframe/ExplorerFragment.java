@@ -1,6 +1,9 @@
 package ppzh.ru.digitalframe;
 
+import android.app.Activity;
 import android.app.ListFragment;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExplorerFragment extends ListFragment {
+
+    OnFragmentInteractionListener mListener;
 
     // TODO: Customize parameters
     private int mColumnCount = 1;
@@ -38,13 +43,29 @@ public class ExplorerFragment extends ListFragment {
         emptyListTextView.setText(R.string.login_message);
 //      Mock data
         List<String> list = new ArrayList<>();
-//        list.add("111"); list.add("222"); list.add("333");
-//        list.add("111"); list.add("222"); list.add("333");
-//        list.add("111"); list.add("222"); list.add("333");
-//        list.add("111"); list.add("222"); list.add("333");
-//        list.add("111"); list.add("222"); list.add("333");
-//        list.add("111"); list.add("222"); list.add("333");
-//        list.add("111"); list.add("222"); list.add("333");
+        if (mListener.getToken() != null) {
+            list.add("111");
+            list.add("222");
+            list.add("333");
+            list.add("111");
+            list.add("222");
+            list.add("333");
+            list.add("111");
+            list.add("222");
+            list.add("333");
+            list.add("111");
+            list.add("222");
+            list.add("333");
+            list.add("111");
+            list.add("222");
+            list.add("333");
+            list.add("111");
+            list.add("222");
+            list.add("333");
+            list.add("111");
+            list.add("222");
+            list.add("333");
+        }
 //      ---------------
 
         ArrayAdapter<String> adapter =
@@ -54,5 +75,25 @@ public class ExplorerFragment extends ListFragment {
         return view;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public interface OnFragmentInteractionListener {
+        String getToken();
+    }
 }
 
