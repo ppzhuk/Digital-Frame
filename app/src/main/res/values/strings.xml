@@ -10,4 +10,8 @@
     <string name="explorer">Explorer</string>
     <string name="empty_list">This directory is empty.</string>
     <string name="no_images">There is no images to show.</string>
+
+    <string name="title_activity_slideshow">SlideshowActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

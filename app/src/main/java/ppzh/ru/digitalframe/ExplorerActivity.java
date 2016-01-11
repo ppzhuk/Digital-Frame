@@ -16,14 +16,12 @@ import java.util.UUID;
 
 public class ExplorerActivity extends AppCompatActivity
         implements ExplorerFragment.OnFragmentInteractionListener {
-    public static final String APP_ID = "ec10556277544ff495a5e04c7dd44e0b";
-    public static final String APP_KEY = "cd1912116ffd4ecd9cd5bd34af79c723";
     private String token = null;
 
     private static final String TAG = "ExplorerActivity";
     private static final String DEVICE_ID = "ru.ppzh.digitalfrane.DEVICE_ID";
 
-    ExplorerFragment fragment = null;
+    private ExplorerFragment fragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

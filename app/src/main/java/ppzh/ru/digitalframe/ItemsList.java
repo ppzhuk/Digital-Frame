@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * Created by Pavel on 10.01.2016.
  */
 public class ItemsList extends ListParsingHandler {
-    List<ListItem> list = new ArrayList<ListItem>();
+    private List<ListItem> list = new ArrayList<ListItem>();
 
     @Override
     public boolean handleItem(ListItem item) {

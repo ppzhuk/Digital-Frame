@@ -2,6 +2,7 @@ package ppzh.ru.digitalframe;
 
 import android.app.Activity;
 import android.app.ListFragment;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,12 +21,18 @@ import com.yandex.disk.client.Credentials;
 import com.yandex.disk.client.ListItem;
 import com.yandex.disk.client.TransportClient;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ExplorerFragment extends ListFragment {
-    ExplorerFragment fragment = this;
-    OnFragmentInteractionListener mListener;
-    TransportClient client;
-    ItemsList list = new ItemsList();
-    ItemsList imagesList = new ItemsList();
+    public static final String IMAGE_PATHS = "ru.ppzh.digitalframe.image_paths";
+    public static final String AUTH_TOKEN = "ru.ppzh.digitalframe.token";
+
+    private ExplorerFragment fragment = this;
+    private OnFragmentInteractionListener mListener;
+    private TransportClient client;
+    private ItemsList list = new ItemsList();
+    private ItemsList imagesList = new ItemsList();
 
     ListView listView;
     TextView emptyListTextView;
@@ -194,12 +201,12 @@ public class ExplorerFragment extends ListFragment {
 
             @Override
             protected void onPostExecute(Void s) {
+                listView.setEnabled(true);
+                listView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 if (imagesList.getList().size() == 0) {
-                    listView.setEnabled(true);
-                    listView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
                     Toast.makeText(getActivity(), R.string.no_images, Toast.LENGTH_LONG).show();
                 } else {
-                    startSlideshow();
+                    startSlideshowActivity();
                 }
 
             }
@@ -207,8 +214,21 @@ public class ExplorerFragment extends ListFragment {
         }.execute(fullPath);
     }
 
-    private void startSlideshow() {
+    private void startSlideshowActivity() {
+        ArrayList<String> imagesPaths = getImagesPaths(imagesList);
+        Intent i = new Intent(getActivity(), SlideshowActivity.class);
+        i.putStringArrayListExtra(IMAGE_PATHS, imagesPaths);
+        i.putExtra(AUTH_TOKEN, mListener.getToken());
+        this.startActivity(i);
+    }
 
+    private ArrayList<String> getImagesPaths(ItemsList imagesList) {
+        ArrayList<String> paths = new ArrayList<String>();
+        List<ListItem> list = imagesList.getList();
+        for (ListItem i: list) {
+            paths.add(i.getFullPath());
+        }
+        return paths;
     }
 }
 
