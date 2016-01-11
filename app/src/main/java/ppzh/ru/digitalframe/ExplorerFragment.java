@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,42 +34,29 @@ public class ExplorerFragment extends ListFragment {
     private ItemsList list = new ItemsList();
     private ItemsList imagesList = new ItemsList();
 
-    ListView listView;
-    TextView emptyListTextView;
-    ExplorerAdapter adapter = null;
+    private ListView listView;
+    private TextView emptyListTextView;
+    private ExplorerAdapter adapter = null;
 
     public static ListItem currentFolderItem = null;
-
-    public ExplorerFragment() {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_explorer, container, false);
-        emptyListTextView = (TextView)view.findViewById(android.R.id.empty);
+        emptyListTextView = (TextView) view.findViewById(android.R.id.empty);
         emptyListTextView.setText(R.string.login_message);
 
         if (mListener.getToken() != null) {
-
+            // TODO: access user login and replace PLACEHOLDER
             try {
-                client =  TransportClient.getInstance(getActivity(),
-                                                      new Credentials("placeholder",
-                                                                      mListener.getToken()));
+                client = TransportClient.getInstance(getActivity(),
+                        new Credentials("placeholder",
+                                mListener.getToken()));
 
-                listView = (ListView) view.findViewById(android.R.id.list);
+                listView = getListView();
                 this.registerForContextMenu(listView);
 
-                ExplorerFragment c = this;
-
-//               TODO change path to root folder
                 openFolder("/");
 
             } catch (Exception e) {
@@ -88,12 +75,12 @@ public class ExplorerFragment extends ListFragment {
             String path = item.getFullPath();
             openFolder(path);
         } else {
-//            TODO: show image preview
+        // TODO: show image preview if click on image
         }
     }
 
     public void openFolder(String path) {
-        new AsyncTask<String, Void, Void>(){
+        new AsyncTask<String, Void, Void>() {
             @Override
             protected void onPreExecute() {
                 list.clear();
@@ -115,6 +102,8 @@ public class ExplorerFragment extends ListFragment {
             protected void onPostExecute(Void s) {
                 listView.setEnabled(true);
                 listView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                // Except others, client.getList() returns current folder.
+                // We don't need it in list.
                 currentFolderItem = list.getList().remove(0);
 
                 Log.i("ExplorerFragment", currentFolderItem.getFullPath());
@@ -155,6 +144,8 @@ public class ExplorerFragment extends ListFragment {
         mListener = null;
     }
 
+    // Interface for communicating with host activity.
+    // Thought it would contain more methods.
     public interface OnFragmentInteractionListener {
         String getToken();
     }
@@ -162,25 +153,25 @@ public class ExplorerFragment extends ListFragment {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-        ListItem item = (ListItem)adapter.getItem(info.position);
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        ListItem item = (ListItem) adapter.getItem(info.position);
         if (item.isCollection()) {
             menu.setHeaderTitle(item.getDisplayName());
-            menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Start slideshow");
+            menu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.context_menu_start_slideshow);
         }
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info =
-                (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-        ListItem listItem = (ListItem)adapter.getItem(info.position);
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        ListItem listItem = (ListItem) adapter.getItem(info.position);
         downloadImagesList(listItem.getFullPath());
         return true;
     }
 
     private void downloadImagesList(String fullPath) {
-        new AsyncTask<String, Void, Void>(){
+        new AsyncTask<String, Void, Void>() {
             @Override
             protected void onPreExecute() {
                 imagesList.clear();
@@ -208,7 +199,6 @@ public class ExplorerFragment extends ListFragment {
                 } else {
                     startSlideshowActivity();
                 }
-
             }
 
         }.execute(fullPath);
@@ -217,17 +207,21 @@ public class ExplorerFragment extends ListFragment {
     private void startSlideshowActivity() {
         ArrayList<String> imagesPaths = getImagesPaths(imagesList);
         Intent i = new Intent(getActivity(), SlideshowActivity.class);
+
         i.putStringArrayListExtra(IMAGE_PATHS, imagesPaths);
         i.putExtra(AUTH_TOKEN, mListener.getToken());
+
         this.startActivity(i);
     }
 
     private ArrayList<String> getImagesPaths(ItemsList imagesList) {
         ArrayList<String> paths = new ArrayList<String>();
         List<ListItem> list = imagesList.getList();
-        for (ListItem i: list) {
+
+        for (ListItem i : list) {
             paths.add(i.getFullPath());
         }
+
         return paths;
     }
 }

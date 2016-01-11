@@ -10,16 +10,15 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.yandex.disk.client.Credentials;
 import com.yandex.disk.client.ProgressListener;
@@ -34,7 +33,9 @@ import java.util.ArrayList;
  * status bar and navigation/system bar) with user interaction.
  */
 public class SlideshowActivity extends AppCompatActivity {
+    private static final String TAG = "ALARM";
     private static final String ACTION_ALARM = "ru.ppzh.digitalframe.action_alarm";
+    private static final int SHOWTIME = 1000 * 5;
 
     private String token;
     private ArrayList<String> paths;
@@ -94,6 +95,7 @@ public class SlideshowActivity extends AppCompatActivity {
 
         paths = getIntent().getStringArrayListExtra(ExplorerFragment.IMAGE_PATHS);
         token = getIntent().getStringExtra(ExplorerFragment.AUTH_TOKEN);
+
         try {
             client = TransportClient.getInstance(this, new Credentials("placeholder", token));
             downloadImage(imageIndex);
@@ -104,7 +106,7 @@ public class SlideshowActivity extends AppCompatActivity {
     }
 
     private void downloadImage(int imageIndex) {
-        new AsyncTask<String, Void, Void>(){
+        new AsyncTask<String, Void, Void>() {
 
             @Override
             protected Void doInBackground(String... params) {
@@ -114,7 +116,7 @@ public class SlideshowActivity extends AppCompatActivity {
                     client.downloadFile(params[0], imageFile, new ProgressListener() {
                         @Override
                         public void updateProgress(long loaded, long total) {
-
+                            // for now its nothing to update
                         }
 
                         @Override
@@ -131,7 +133,9 @@ public class SlideshowActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(Void s) {
-                Log.i("ALARM", "download finished");
+
+                Log.i(TAG, "download finished");
+
                 if (firstImage) {
                     firstImage = false;
                     updateImage(imageFile);
@@ -146,9 +150,17 @@ public class SlideshowActivity extends AppCompatActivity {
         }.execute(paths.get(imageIndex));
     }
 
+    // There is 2 ways to update image:
+    // 1 - if next image downloaded earlier than showtime ended
+    // then it vaits until alarm goes on.
+    // 2 - if alarm goes on earlier than next image downloaded
+    // then it vaits until image will be downloaded.
+    //TODO: add caching for downloaded images.
     private void updateImage(File imageFile) {
-        Log.i("ALARM", "picture update");
-        ImageView image = (ImageView)mContentView;
+
+        Log.i(TAG, "picture update");
+
+        ImageView image = (ImageView) mContentView;
         Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
         image.setImageBitmap(bitmap);
         if (!imageFile.delete()) {
@@ -164,10 +176,12 @@ public class SlideshowActivity extends AppCompatActivity {
 
         downloadImage(imageIndex);
 
-        AlarmManager am = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(ACTION_ALARM);
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
-        am.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000 * 5, pi);
+
+        // TODO: move showtime to user settings
+        am.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + SHOWTIME, pi);
     }
 
     //----AlarmReceiver--------
@@ -175,14 +189,16 @@ public class SlideshowActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i("ALARM", "timer goes on");
+
+            Log.i(TAG, "timer goes on");
+
             alarmFired = true;
             if (downloadFinished) {
                 updateImage(imageFile);
             }
         }
     }
-//-------------------------
+    //-------------------------
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {

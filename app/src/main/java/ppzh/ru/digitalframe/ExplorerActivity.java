@@ -2,16 +2,16 @@ package ppzh.ru.digitalframe;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
 import java.util.UUID;
 
 public class ExplorerActivity extends AppCompatActivity
@@ -29,6 +29,9 @@ public class ExplorerActivity extends AppCompatActivity
 
 
         Uri url = getIntent().getData();
+        // url == null if activity opened first time
+        // url != null after auth
+        // TODO: check SharedPreferences for token
         if (url != null) {
             String fragment = url.getFragment();
             if (fragment != null && fragment.startsWith("access_token=")) {
@@ -47,8 +50,6 @@ public class ExplorerActivity extends AppCompatActivity
         fragment = new ExplorerFragment();
         fragmentTransaction.add(R.id.explorer_fragment_container, fragment);
         fragmentTransaction.commit();
-
-
     }
 
     public String getToken() {
@@ -74,7 +75,7 @@ public class ExplorerActivity extends AppCompatActivity
             case R.id.menu_login:
                 yandexDiskLogin();
                 return true;
-            // TODO: add menu actions handling
+            // TODO: add other menus actions handling (settings, how to)
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -114,6 +115,7 @@ public class ExplorerActivity extends AppCompatActivity
         return fragment.substring(start, end);
     }
 
+    // navigate into parent folder till reach root folder
     @Override
     public void onBackPressed() {
         String currentPath = ExplorerFragment.currentFolderItem.getFullPath();

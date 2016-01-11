@@ -1,25 +1,23 @@
 package ppzh.ru.digitalframe;
 
-import android.util.Log;
-
 import com.yandex.disk.client.ListItem;
 import com.yandex.disk.client.ListParsingHandler;
-import java.util.List;
-import java.util.ArrayList;
 
-/**
- * Created by Pavel on 10.01.2016.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class ItemsList extends ListParsingHandler {
     private List<ListItem> list = new ArrayList<ListItem>();
 
+    // we are only interested in folders and images, so ignore other files.
+    // TODO: add other image types
     @Override
     public boolean handleItem(ListItem item) {
         if (item.isCollection() || item.getContentType().equals("image/jpeg")) {
             list.add(item);
         }
 
-//      what to return??
+//      what it should return??
         return true;
     }
 

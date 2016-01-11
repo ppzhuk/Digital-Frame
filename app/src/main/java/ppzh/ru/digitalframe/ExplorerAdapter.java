@@ -4,26 +4,21 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yandex.disk.client.ListItem;
 
-/**
- * Created by Pavel on 10.01.2016.
- */
-
 public class ExplorerAdapter extends BaseAdapter {
     private Context context;
     private ItemsList items;
     private LayoutInflater lInflater;
 
-    public ExplorerAdapter(Context c, ItemsList list) {
-        this.context = c;
-        this.items = list;
-        lInflater = (LayoutInflater) c
+    public ExplorerAdapter(Context context, ItemsList items) {
+        this.context = context;
+        this.items = items;
+        lInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -52,8 +47,8 @@ public class ExplorerAdapter extends BaseAdapter {
 
         ListItem item = (ListItem) getItem(position);
 
-        ImageView icon = (ImageView)view.findViewById(R.id.item_image);
-        TextView name = (TextView)view.findViewById(R.id.item_name);
+        ImageView icon = (ImageView) view.findViewById(R.id.item_image);
+        TextView name = (TextView) view.findViewById(R.id.item_name);
 
 
         if (item.isCollection()) {
