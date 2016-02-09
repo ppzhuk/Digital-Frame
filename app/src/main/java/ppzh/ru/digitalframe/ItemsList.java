@@ -17,7 +17,6 @@ public class ItemsList extends ListParsingHandler {
             list.add(item);
         }
 
-//      what it should return??
         return true;
     }
 
